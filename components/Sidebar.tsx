@@ -26,6 +26,7 @@ interface SidebarProps {
   activePage: string;
   onNavigate: (page: string) => void;
   onSelectCategory?: (category: AdCategory) => void;
+  onLogout: () => void;
 }
 
 const mainMenuItems: MenuItem[] = [
@@ -46,7 +47,7 @@ const bottomMenuItems: MenuItem[] = [
   { id: 'suporte', label: 'Suporte', icon: HelpCircle },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, onSelectCategory }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, onSelectCategory, onLogout }) => {
   const [isAnunciarOpen, setIsAnunciarOpen] = useState(false);
 
   const handlePublishClick = (page: string) => {
@@ -54,6 +55,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, onSelectCateg
     onNavigate(page);
     // Close dropdown
     setIsAnunciarOpen(false);
+  };
+
+  const handleMenuClick = (itemId: string) => {
+    if (itemId === 'sair') {
+      onLogout();
+    } else {
+      onNavigate(itemId);
+    }
   };
 
   return (
@@ -142,7 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, onSelectCateg
           return (
             <button
               key={item.id}
-              onClick={() => onNavigate(item.id)}
+              onClick={() => handleMenuClick(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                 isActive 
                   ? 'bg-emerald-50 text-emerald-700' 
@@ -163,14 +172,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, onSelectCateg
            return (
             <button
               key={item.id}
-              onClick={() => onNavigate(item.id)}
+              onClick={() => handleMenuClick(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                 isActive 
                   ? 'bg-emerald-50 text-emerald-700' 
                   : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-              }`}
+              } ${item.id === 'sair' ? 'text-red-500 hover:bg-red-50 hover:text-red-600' : ''}`}
             >
-              <item.icon size={18} className={isActive ? 'text-emerald-600' : 'text-gray-400'} />
+              <item.icon size={18} className={item.id === 'sair' ? 'text-red-500' : (isActive ? 'text-emerald-600' : 'text-gray-400')} />
               {item.label}
             </button>
           );

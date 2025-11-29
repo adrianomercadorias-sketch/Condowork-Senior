@@ -4,9 +4,13 @@ import Header from './components/Header';
 import MainContent from './components/MainContent';
 import RightSidebar from './components/RightSidebar';
 import ChatInterface from './components/ChatInterface';
+import LoginScreen from './components/LoginScreen';
 import { AdCategory, UserProfile, EventItem } from './types';
 
 const App: React.FC = () => {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   const [activePage, setActivePage] = useState<string>('anuncios');
   const [selectedCategory, setSelectedCategory] = useState<AdCategory | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -78,6 +82,20 @@ const App: React.FC = () => {
     setUserProfile(updatedProfile);
   };
 
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setActivePage('anuncios'); // Reset to default page on logout
+    setIsChatOpen(false);
+  };
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
+
   return (
     <div className="flex h-screen bg-gray-50 font-sans overflow-hidden">
       {/* Left Sidebar - Navigation */}
@@ -85,6 +103,7 @@ const App: React.FC = () => {
         activePage={activePage} 
         onNavigate={handleNavigate} 
         onSelectCategory={handleCategorySelect}
+        onLogout={handleLogout}
       />
 
       {/* Center & Right Area */}
